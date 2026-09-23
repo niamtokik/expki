@@ -1,26 +1,31 @@
 # Expki.Umbrella
 
-To start your Phoenix server: 
+`expki` is an experimental project created to manage self-signed
+certificates with Elixir, including an API and a WUI.
 
-* Run `mix setup` to install and setup dependencies
-* Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server` 
+# Requirements
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+* elixir
+* postgresql-server
+* openssl or libressl
 
-Ready to run in production? Please [check our deployment guides](https://phoenix.hexdocs.pm/deployment.html).
-## Umbrella project
+# Usage
 
-This is an Elixir umbrella project. It is composed of multiple apps:
+```console
+```
 
-* [Expki](apps/expki) - The core logic
-* [ExpkiWeb](apps/expki_web) - The Phoenix web interface
+# Test
 
-Each app has its own README and configuration.
+```console
+```
 
-## Learn more
+# References and Resources
 
-* Official website: https://www.phoenixframework.org/
-* Guides: https://phoenix.hexdocs.pm/overview.html
-* Docs: https://phoenix.hexdocs.pm
-* Forum: https://elixirforum.com/c/phoenix-forum
-* Source: https://github.com/phoenixframework/phoenix
+* https://github.com/Taylorwaldo/PKILab_OpenSSL-Experiments
+* https://github.com/NDO4ME/Trustsslroot
+* https://gist.github.com/xl-sec/a540d3bd230661ee1692a65185d8814c
+* https://github.com/OpenVPN/easy-rsa
+* https://easy-rsa.readthedocs.io/en/latest/
+* https://community.openvpn.net/Pages/EasyRSA
+* https://pki-tutorial.readthedocs.io/en/latest/
+* https://www.redhat.com/en/blog/openssl-and-internet-pki
