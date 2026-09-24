@@ -29,3 +29,6 @@ certificates with Elixir, including an API and a WUI.
 * https://community.openvpn.net/Pages/EasyRSA
 * https://pki-tutorial.readthedocs.io/en/latest/
 * https://www.redhat.com/en/blog/openssl-and-internet-pki
+* https://docs.strongswan.org/docs/latest/pki/pki.html
+* https://github.com/letsencrypt/boulder
+* https://github.com/letsencrypt/boulder/blob/main/README.md
