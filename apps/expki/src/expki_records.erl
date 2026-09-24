@@ -46,6 +46,9 @@ record_to_map(Record)
 %% @doc Converts an Erlang record into an Elixir Struct.
 %%
 %% see: https://elixir.hexdocs.pm/main/structs.html
+%% see: https://github.com/erlang/otp/blob/237030f6583ced4bb9aa4de54912e56e0fbfde51/lib/ssl/test/cryptcookie.erl#L725
+%% see: https://github.com/erlang/otp/blob/237030f6583ced4bb9aa4de54912e56e0fbfde51/lib/stdlib/src/erl_expand_records.erl#L559
+%% see: https://github.com/erlang/otp/blob/237030f6583ced4bb9aa4de54912e56e0fbfde51/lib/stdlib/src/erl_expand_records.erl#L1037
 %% @end
 %%--------------------------------------------------------------------
 -spec record_to_struct(Record) -> Return when
@@ -55,6 +58,26 @@ record_to_map(Record)
 record_to_struct(Record)
   when is_tuple(Record), is_atom(element(1, Record)) ->
     Name = element(1, Record),
+    [_|Values] = tuple_to_list(Record),
+    % TODO: this can't work because record_info is not really a function,
+    % it is added directly on the ast and compiled on demand. I was thinking
+    % to use merl, but it seems it is not available when used with Elixir.
+    % 
+    % returns the raw tokens from the file:
+    %
+    %   epp:scan_file(".../include/public_key.hrl", []).
+    %
+    % return the parsed file (ast). a custom source name is required to
+    % be able to compile only the header.
+    %
+    %   epp:parse_file(".../include/public_key.hrl", [{source_name, pp}]).
+    %
+    % luckily, epp module is available with elixir. So, it could be possible
+    % to craft an erlang module (or an elixir module) using the AST from
+    % public_key.hrl.
+    Fields = [record_info(fields, Record)],
+
     maps:from_list([
       {'__struct__', Name}
+      | lists:zip(Fields, Values)
     ]).
