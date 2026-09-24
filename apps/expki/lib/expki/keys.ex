@@ -5,24 +5,9 @@ defmodule Expki.Keys do
 
   @doc """
   List all keys present in the keys table.
-
-  ## Example
-
-  ```elixir
-  iex> list_keys()
-  []
-  ```
   """
   def list_keys do
     Repo.all(Key)
-  end
-
-  def create_key() do
-    create_key(generate_key())
-  end
-
-  def create_key(key) do
-    Repo.insert(%Key{ key: key })
   end
 
   @doc """
@@ -32,46 +17,83 @@ defmodule Expki.Keys do
   see: https://www.erlang.org/doc/apps/public_key/public_key.html#generate_key/1
   see: https://github.com/erlang/otp/blob/c845375d0f26e65688237de8edb730f57f1f3697/lib/public_key/doc/guides/using_public_key.md
   """
-  def generate_key() do
-    private_key = :public_key.generate_key({:rsa, 1024, 65537}) #, pss_params()}
+  def generate_key(params \\ %{}) do
+    modulus = Map.get(params, :modulus, 2048)
+    exponent = Map.get(params, :exponent, 65537)
+
+    # different methods exists to generate a private key, the one
+    # from crypto will output a private key as binaries, then it will
+    # need to be converted. instead, generate_key from public_key
+    # module is directly compatible with the pem format.
+    private_key = :public_key.generate_key({:rsa, modulus, exponent})
+
+    # generate the pem entry for an RSA Private Key
+    # TODO: add encryption support
     pem_entry = :public_key.pem_entry_encode(:"RSAPrivateKey", private_key)
+
+    # encode the pem entry previously created
     :public_key.pem_encode([pem_entry])
   end
 
   @doc """
-  TODO: to remove, not used, mostly reverse engineering test from erlang.
+  Verify if a key is correct and uses a valid pem format.
+
+  TODO: use this function in a changeset
   """
-  def generate_key2() do
-    {public, private} = :crypto.generate_key(:rsa, {2048, 65537})
-    :io.format("~p~n", [private])
-    [public_exponent, public_modulus] = public
-    [ _public_exponent, _public_modulus,
-      private_exponent, prime1,
-      prime2, exponent1,
-      exponent2, crt
-    ] = private
-    private_key_record = {:RSAPrivateKey, 1, public_modulus, public_exponent, private_exponent, prime1, prime2, exponent1, exponent2, crt, []}
-    private_key_params = pss_params()
-    :public_key.der_encode(:PrivateKeyInfo, {private_key_record, private_key_params})
+  @spec verify_key(key :: String.t()) :: :ok | {:error, term()}
+  def verify_key(key) do
+    key
+    |> :public_key.pem_decode()
+    |> verify_key1()
+  end
+
+  # it must have only one pem entry.
+  defp verify_key1(pem_entry = [{:"RSAPrivateKey", _pkey, :not_encrypted}]) do
+    pem_entry
+    |> verify_key2()
+  end
+  defp verify_key1(_), do: {:error, :pem}
+
+  # check the RSAPrivateKey Erlang record
+  defp verify_key2([rsa = {:"RSAPrivateKey", _, _}]) do
+    rsa
+    |> :public_key.pem_entry_decode()
+    |> verify_key3()
+  end
+  defp verify_key2(_), do: {:error, :pem_entry}
+
+  # check the decoded content of the RSA private key
+  # TODO: check each fields.
+  defp verify_key3({:RSAPrivateKey, _v, _, _, _, _, _, _, _, _, _}), do: :ok
+  defp verify_key3(_), do: {:error, :rsa_private_key}
+
+  @doc """
+  Create a new key and insert it in the database after
+  validation. If no key is given, a key is generated
+  automatically via generate_key/0.
+
+  TODO: the verification should be done in a changeset
+  """
+  def create_key(attrs \\ %{}) do
+    key = Map.get(attrs, :key, generate_key())
+    case verify_key(key) do
+      :ok -> Repo.insert(%Key{ key: key })
+      error -> error
+    end
   end
 
   @doc """
-  TODO: to remove, not used, mostly reverse engineering test from erlang.
-  see: https://github.com/erlang/otp/blob/c845375d0f26e65688237de8edb730f57f1f3697/lib/public_key/doc/guides/public_key_records.md?plain=1#L118
-  see: https://github.com/erlang/otp/blob/c845375d0f26e65688237de8edb730f57f1f3697/lib/public_key/test/public_key_SUITE.erl
-  see: https://github.com/erlang/otp/blob/c845375d0f26e65688237de8edb730f57f1f3697/lib/public_key/include/OTP-PUB-KEY.hrl
+  Returns a key from the database.
   """
-  def pss_params() do
-    { :"RSASSA-PSS-params", 
-      # hashAlgorithm
-      {:HashAlgorithm, {2,16,840,1,101,3,4,2,1}},
-      # maskGenAlgorithm
-      {:MaskGenAlgorithm, :"id-mgf1", {:"HashAlgorithm", {2,16,840,1,101,3,4,2,1}}},
-      # saltLength
-      32,
-      # trailerField
-      1
-    }
+  def get_key(id) do
+    Repo.get_by(Key, id: id)
+  end
+
+  @doc """
+  Delete a key from the database
+  """
+  def delete_key(key = %Key{}) do
+    Repo.delete(key)
   end
 
 end
