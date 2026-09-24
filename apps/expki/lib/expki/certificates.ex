@@ -9,6 +9,17 @@ defmodule Expki.Certificates do
   alias Expki.Certificates.Certificate
 
   @doc """
+  Generating a full PEM certificate with Erlang is
+  already challenging, but doing it with Elixir is
+  even more challening due to the amount of record
+  to deal with. So, for this first version, only a
+  small subset of certificate field will be 
+  supported.
+  """
+  def generate_cert() do
+  end
+
+  @doc """
   Returns the list of certificates.
 
   ## Examples
