@@ -15,6 +15,7 @@ defmodule Expki.Keys do
   import Ecto.Query, warn: false
   alias Expki.Repo
   alias Expki.Certificates.Key
+  alias Expki.PublicKey.RSAPrivateKey
 
   @doc """
   List all keys present in the keys table.
@@ -43,7 +44,7 @@ defmodule Expki.Keys do
 
     # generate the pem entry for an RSA Private Key
     # TODO: add encryption support
-    pem_entry = :public_key.pem_entry_encode(:"RSAPrivateKey", private_key)
+    pem_entry = :public_key.pem_entry_encode(:RSAPrivateKey, private_key)
 
     # encode the pem entry previously created
     {:ok, :public_key.pem_encode([pem_entry])}
@@ -57,7 +58,7 @@ defmodule Expki.Keys do
   @spec verify_private_key(key :: String.t()) :: :ok | {:error, term()}
   def verify_private_key(key) do
     with [pem_entry = {:RSAPrivateKey, _,_}] <- :public_key.pem_decode(key),
-         {:RSAPrivateKey, _, _, _, _, _, _, _, _, _, _} <- :public_key.pem_entry_decode(pem_entry)
+      {:ok, _} <- RSAPrivateKey.convert(:public_key.pem_entry_decode(pem_entry))
     do
       :ok
     else
@@ -100,7 +101,7 @@ defmodule Expki.Keys do
   """
   def public_key_from_private_key(key) do
     with [pem_entry = {:RSAPrivateKey, _,_}] <- :public_key.pem_decode(key),
-         {:RSAPrivateKey, _version, modulus, exponent, _, _, _, _, _, _, _} <- :public_key.pem_entry_decode(pem_entry)
+      {:ok, %RSAPrivateKey{modulus: modulus, publicExponent: exponent}} <- RSAPrivateKey.convert(:public_key.pem_entry_decode(pem_entry))
     do
       public_key = {:RSAPublicKey, modulus, exponent}
       {:ok, :public_key.pem_encode([
