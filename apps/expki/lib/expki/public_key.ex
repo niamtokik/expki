@@ -82,6 +82,18 @@ defmodule Expki.PublicKey do
     Record.extract(record, from_lib: Path.join(["public_key", @header_file]))
   end
 
+  @doc """
+  TODO:
+  """
+  def definitions() do
+    case :code.lib_dir(:public_key) do
+      {:error, reason} -> {:error, reason}
+      path ->
+        target = Path.join([path, "include/OTP-PUB-KEY.hrl"])
+        :epp.parse_file(target, source_name: :pp)
+    end
+  end
+
   @doc false
   defmacro __using__(opts) do
 
