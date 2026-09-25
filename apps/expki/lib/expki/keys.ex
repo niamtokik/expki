@@ -16,6 +16,7 @@ defmodule Expki.Keys do
   alias Expki.Repo
   alias Expki.Certificates.Key
   alias Expki.PublicKey.RSAPrivateKey
+  alias Expki.PublicKey.RSAPublicKey
 
   @doc """
   List all keys present in the keys table.
@@ -103,10 +104,10 @@ defmodule Expki.Keys do
     with [pem_entry = {:RSAPrivateKey, _,_}] <- :public_key.pem_decode(key),
       {:ok, %RSAPrivateKey{modulus: modulus, publicExponent: exponent}} <- RSAPrivateKey.convert(:public_key.pem_entry_decode(pem_entry))
     do
-      public_key = {:RSAPublicKey, modulus, exponent}
-      {:ok, :public_key.pem_encode([
-        :public_key.pem_entry_encode(:RSAPublicKey, public_key)
-      ])}
+      pem_entry = 
+        %RSAPublicKey{ modulus: modulus, publicExponent: exponent }
+        |> RSAPublicKey.pem_entry_encode!()
+      {:ok, :public_key.pem_encode(pem_entry)}
     else
       _ -> {:error, :not_private_key}
     end

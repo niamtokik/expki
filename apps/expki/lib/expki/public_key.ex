@@ -179,6 +179,26 @@ defmodule Expki.PublicKey do
         when is_tuple(record) and :erlang.size(record) == unquote(size) and :erlang.element(1, record) == unquote(name), 
           do: true
       def is_valid?(_), do: false
+
+      # pem entry encoding helper, can be enabled by setting pem opts to true
+      unquote do
+        if (Keyword.get(opts, :pem, false)) do
+          quote do
+      @doc "A wrapper around public_key:pem_entry_encode"
+      def pem_entry_encode!(struct = %__MODULE__{}) do
+        r = convert!(struct)
+        :public_key.pem_entry_encode(unquote(name), r)
+      end
+
+      @doc "A wrapper around public_key:pem_entry_decode"
+      def pem_entry_decode!(string) do
+        string
+          |> :public_key.pem_entry_decode()
+          |> convert()
+      end
+          end
+        end
+      end
     end
   end
 end
