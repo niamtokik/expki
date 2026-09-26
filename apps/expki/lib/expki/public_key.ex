@@ -89,9 +89,40 @@ defmodule Expki.PublicKey do
     case :code.lib_dir(:public_key) do
       {:error, reason} -> {:error, reason}
       path ->
-        target = Path.join([path, "include/OTP-PUB-KEY.hrl"])
-        :epp.parse_file(target, source_name: :pp)
+        {:ok, pid} = Path.join([path, "include/public_key.hrl"])
+          |> String.to_charlist()
+          |> :epp.open([], [])
+        definitions_loop(pid)
+        definitions_macros(pid)
     end
+  end
+
+  # loop over the whole opened erlang file
+  defp definitions_loop(pid) do
+    msg = :epp.parse_erl_form(pid)
+    case msg do
+      {:eof, _} ->
+        :ok
+      _ ->
+        definitions_loop(pid)
+    end
+  end
+
+  # retrieve the macros
+  defp definitions_macros(pid) do
+    send(pid, {:epp_request, self(), :macro_defs})
+    receive do
+      {:epp_reply, pid, macros} ->
+        :epp.close(pid)
+        {:ok, macros}
+      msg ->
+        :epp.close(pid)
+        {:error, msg}
+      after
+        10000 ->
+          :epp.close(pid)
+          {:error, :timeout}
+      end
   end
 
   @doc false
