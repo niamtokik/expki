@@ -3,10 +3,13 @@ defmodule Expki.PublicKey.CertificateAlgorithmIdentifier do
   alias Expki.PublicKey
 
   @algorithms [
+    :md2WithRSAEncryption,
+    :md5WithRSAEncryption,
+    :sha1WithRSAEncryption,
     :sha224WithRSAEncryption,
     :sha256WithRSAEncryption,
     :sha384WithRSAEncryption,
-    :sha512WithRSAEncryption
+    :sha512WithRSAEncryption,
   ]
 
   for algorithm <- @algorithms do
