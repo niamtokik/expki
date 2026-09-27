@@ -4,6 +4,7 @@ defmodule Expki.PublicKey.TBSCertificate do
   alias Expki.PublicKey.Validity
   alias Expki.PublicKey.SubjectPublicKeyInfo
   alias Expki.PublicKey.CertificateAlgorithmIdentifier
+  alias Expki.PublicKey.AttributeTypeAndValue
 
 # draft
 #   def create(params) do
@@ -33,4 +34,19 @@ defmodule Expki.PublicKey.TBSCertificate do
 #       }
 #     end
 #   end
+
+  def t() do
+    %__MODULE__{
+      issuer: {:rdnSequence, [
+        [AttributeTypeAndValue.id_at_countryName(~c"CF")],
+        [AttributeTypeAndValue.id_at_organizationName("OrganizationName")],
+        [AttributeTypeAndValue.id_at_organizationalUnitName("OrganizationUnit")],
+        [AttributeTypeAndValue.id_at_stateOrProvinceName("State")],
+        [AttributeTypeAndValue.id_at_commonName("CommonName")],
+        [AttributeTypeAndValue.id_at_serialNumber("SerialNumber")],
+      ]},
+      validity: Validity.create( ~U[2020-01-01 00:00:00Z], ~U[2030-01-01 00:00:00Z]),
+    }
+  end
+
 end

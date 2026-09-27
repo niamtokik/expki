@@ -8,7 +8,8 @@ defmodule Expki.PublicKey.AttributeTypeAndValue do
   @identifiers [
     :"id-at",
     :"id-at-commonName",
-    :"id-at-countryName",
+    # country name is a bit special.
+    # :"id-at-countryName",
     :"id-at-dnQualifier",
     :"id-at-generationQualifier",
     :"id-at-givenName",
@@ -24,8 +25,17 @@ defmodule Expki.PublicKey.AttributeTypeAndValue do
     :"id-at-title",
   ]
 
+  @spec id_at_countryName(list()) :: %__MODULE__{}
+  def id_at_countryName(value) when is_list(value) do
+    %__MODULE__{
+      type: PublicKey.macro(:"id-at-countryName"),
+      value: value
+    }
+  end
+
   # this part is used to genreate automatically all available
-  # identifiers from public_key macros.
+  # identifiers from public_key macros. It is assumed for now
+  # that all those identifiers are using utf8 encoding.
   for identifier <- @identifiers do
     fun_name = identifier
       |> Atom.to_string()
@@ -35,16 +45,11 @@ defmodule Expki.PublicKey.AttributeTypeAndValue do
     @doc """
     Function helper to create unquote(identifier) type.
     """
-    @spec unquote(fun_name)(String.t() | list()) :: %__MODULE__{}
+    @spec unquote(fun_name)(String.t()) :: %__MODULE__{}
     def unquote(fun_name)(value) when is_binary(value) do
-      value
-      |> String.to_charlist()
-      |> unquote(fun_name)()
-    end
-    def unquote(fun_name)(value) when is_list(value) do
       %__MODULE__{
         type: PublicKey.macro(unquote(identifier)),
-        value: value
+        value: {:utf8String, value}
       }
     end
   end
