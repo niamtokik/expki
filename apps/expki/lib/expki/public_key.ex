@@ -134,6 +134,12 @@ defmodule Expki.PublicKey do
       def keys(), do: unquote(keys)
 
       @doc """
+      Returns the struct for this module.
+      """
+      @spec struct() :: %__MODULE__{}
+      def struct(), do: %__MODULE__{}
+
+      @doc """
       Convert a record as a struct, or a struct as a record.
       """
       @spec convert(%__MODULE__{} | tuple()) :: {:ok, %__MODULE__{} | tuple()}
