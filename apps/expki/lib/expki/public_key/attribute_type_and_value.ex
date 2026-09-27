@@ -5,27 +5,47 @@ defmodule Expki.PublicKey.AttributeTypeAndValue do
   use Expki.PublicKey, name: :AttributeTypeAndValue
   alias Expki.PublicKey
 
-  @doc """
-  Return the CN field.
-  @TODO: improve the guards
-  """
-  @spec country_name(charlist()) :: %__MODULE__{}
-  def country_name(cn) when is_binary(cn) do
-    cn
-    |> String.to_charlist()
-    |> country_name()
-  end
-  def country_name(cn) when is_list(cn) and length(cn) <= 2 do
-    %__MODULE__{
-      type: PublicKey.macro(:"id-at-countryName"),
-      value: cn
-    }
-  end
+  @identifiers [
+    :"id-at",
+    :"id-at-commonName",
+    :"id-at-countryName",
+    :"id-at-dnQualifier",
+    :"id-at-generationQualifier",
+    :"id-at-givenName",
+    :"id-at-initials",
+    :"id-at-localityName",
+    :"id-at-name",
+    :"id-at-organizationName",
+    :"id-at-organizationalUnitName",
+    :"id-at-pseudonym",
+    :"id-at-serialNumber",
+    :"id-at-stateOrProvinceName",
+    :"id-at-surname",
+    :"id-at-title",
+  ]
 
-  # the common types found in the rdn sequence to create:
-  # TODO: organizational_name()
-  # TODO: organizational_unit()
-  # TODO: state()
-  # TODO: common_name()
-  # TODO: serial_number()
+  # this part is used to genreate automatically all available
+  # identifiers from public_key macros.
+  for identifier <- @identifiers do
+    fun_name = identifier
+      |> Atom.to_string()
+      |> String.replace("-", "_") 
+      |> String.to_atom()
+
+    @doc """
+    Function helper to create unquote(identifier) type.
+    """
+    @spec unquote(fun_name)(String.t() | list()) :: %__MODULE__{}
+    def unquote(fun_name)(value) when is_binary(value) do
+      value
+      |> String.to_charlist()
+      |> unquote(fun_name)()
+    end
+    def unquote(fun_name)(value) when is_list(value) do
+      %__MODULE__{
+        type: PublicKey.macro(unquote(identifier)),
+        value: value
+      }
+    end
+  end
 end

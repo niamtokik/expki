@@ -135,15 +135,41 @@ defmodule Expki.PublicKeyMacros do
     quote do
       import Expki.PublicKeyMacros
 
+      @doc """
+      returns the whole key/value macros.
+      """
       def macros(), do: unquote(defs)
 
+      @doc """
+      Returns key's value or value's key.
+      """
       def macro(index) do
         Map.get(unquote(defs), index)
       end
 
+      @doc """
+      Returns the list of all keys.
+      """
       def macro_keys(), do: unquote(macro_keys())
 
+      @doc """
+      Returns the list of all values.
+      """
       def macro_values(), do: unquote(macro_values())
+
+      @doc """
+      A function helper to search inside the macros keys.
+      """
+      def search_keys(regexp) do
+        macro_keys()
+        |> Enum.map(&Atom.to_string/1)
+        |> Enum.filter(fn(k) ->
+          cond do
+            Regex.match?(regexp, k) -> true
+            true -> false
+          end
+        end)
+      end
     end
   end
 end
