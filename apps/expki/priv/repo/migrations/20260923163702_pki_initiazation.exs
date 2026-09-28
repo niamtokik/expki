@@ -6,7 +6,11 @@ defmodule Expki.Repo.Migrations.PkiInitiazation do
     # protected with encryption. For now, no information are
     # stored, only the raw key in PEM format.
     create table("keys") do
-      add :key, :text, unique: true
+      add :key, :text
+
+      # checksum of the key.
+      # required to create an unique index
+      add :sha256, :text, null: false
 
       # TODO: define if the key is protected or not
       # add :encrypted, :boolean, default: false, null: false
@@ -17,11 +21,13 @@ defmodule Expki.Repo.Migrations.PkiInitiazation do
       timestamps()
     end
 
+    create unique_index("keys", :sha256)
+
     # This table will contain all certificates, including CA, CSR
     # and Signed Certificates.
     create table("certificates") do
       # the unique name of the certificate defined by the user
-      add :name, :text, unique: true, null: false
+      add :name, :text, null: false
 
       # the kind of certificate (csr, ca, signed...)
       add :is_request, :boolean, null: false
@@ -29,13 +35,14 @@ defmodule Expki.Repo.Migrations.PkiInitiazation do
       add :is_signed, :boolean, null: false
 
       # the certificate itself, in PEM format
-      add :certificate, :text, unique: true, null: false
+      add :certificate, :text, null: false
+      add :sha256, :text, null: false
 
       # a certificate can have a key.
       add :key_id, references("keys")
 
       # The unique serial extracted from the certificate
-      add :serial, :text, unique: true, null: false
+      add :serial, :text, null: false
 
       # the time interval extracted from the certificate.
       add :not_before, :timestamp, null: false
@@ -65,5 +72,9 @@ defmodule Expki.Repo.Migrations.PkiInitiazation do
       
       timestamps()
     end
+
+    create unique_index("certificates", :name)
+    create unique_index("certificates", :sha256)
+    create unique_index("certificates", :serial)
   end
 end

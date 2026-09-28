@@ -51,6 +51,11 @@ defmodule Expki.Keys do
     {:ok, :public_key.pem_encode([pem_entry])}
   end
 
+  def generate_private_key!(params \\ %{}) do
+    {:ok, key} = generate_private_key(params)
+    key
+  end
+
   @doc """
   Verify if a key is correct and uses a valid pem format.
 
@@ -112,9 +117,19 @@ defmodule Expki.Keys do
   TODO: the verification should be done in a changeset
   """
   def create_private_key(attrs \\ %{}) do
-    key = Map.get(attrs, :key, generate_private_key())
+    key = Map.get(attrs, :key, generate_private_key!())
     case verify_private_key(key) do
-      {:ok, _} -> Repo.insert(%Key{ key: key })
+      {:ok, _} -> 
+        # if the key is supported/valid
+        # we compute the checksum and update it
+        sha256 = Expki.Crypto.sha256(key)
+
+        %Key{
+          key: key,
+          sha256: sha256
+        }
+        |> Key.changeset(attrs) 
+        |> Repo.insert()
       error -> error
     end
   end
