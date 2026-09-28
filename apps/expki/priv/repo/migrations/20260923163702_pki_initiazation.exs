@@ -9,7 +9,7 @@ defmodule Expki.Repo.Migrations.PkiInitiazation do
       add :key, :text, unique: true
 
       # TODO: define if the key is protected or not
-      # add :protected, :boolean, default: false, null: false
+      # add :encrypted, :boolean, default: false, null: false
       
       # TODO: parameters of the keys (e.g. size for rsa), it
       # will be useful to know it.

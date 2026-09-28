@@ -9,14 +9,27 @@ defmodule Expki.Certificates do
   alias Expki.Certificates.Certificate
 
   @doc """
-  Generating a full PEM certificate with Erlang is
-  already challenging, but doing it with Elixir is
-  even more challening due to the amount of record
-  to deal with. So, for this first version, only a
-  small subset of certificate field will be 
-  supported.
+  verify if a certificate is valid and supported before
+  inserting it
   """
-  def generate_cert() do
+  def verify_certificate(cert) do
+    case :public_key.pem_decode(cert) do
+      # der entry, the certificate start with
+      #   -----BEGIN CERTIFICATE-----
+      [der_entry = {:Certificate, _data, :not_encrypted}] ->
+        certificate_der(der_entry)
+
+      # TODO: pem entry
+      # [...]
+      
+      _ ->
+        {:error, :not_supported}
+    end
+  end
+
+  defp certificate_der({type, data, _}) do
+    :public_key.der_decode(type, data)
+    |> Expki.PublicKey.Certificate.convert()
   end
 
   @doc """
@@ -46,7 +59,11 @@ defmodule Expki.Certificates do
       ** (Ecto.NoResultsError)
 
   """
-  def get_certificate!(id), do: Repo.get!(Certificate, id)
+  def get_certificate!(id) do
+    Certificate
+    |> Repo.get!(id)
+    |> Repo.preload(:key)
+  end
 
   @doc """
   Creates a certificate.
@@ -64,24 +81,6 @@ defmodule Expki.Certificates do
     %Certificate{}
     |> Certificate.changeset(attrs)
     |> Repo.insert()
-  end
-
-  @doc """
-  Updates a certificate.
-
-  ## Examples
-
-      iex> update_certificate(certificate, %{field: new_value})
-      {:ok, %Certificate{}}
-
-      iex> update_certificate(certificate, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_certificate(%Certificate{} = certificate, attrs) do
-    certificate
-    |> Certificate.changeset(attrs)
-    |> Repo.update()
   end
 
   @doc """
