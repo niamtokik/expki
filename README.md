@@ -1,7 +1,15 @@
 # Expki.Umbrella
 
-`expki` is an experimental project created to manage self-signed
-certificates with Elixir, including an API and a WUI.
+**WARNING: highly experimental application, don't use it in production**
+
+`expki` is an experimental project created to manage self-signed certificates
+with Elixir, including an API and a WUI. The story behind this project is not
+really interesting, my infrastructure contains OpenVPN service, and the
+certificates require maintenance.  The current way to deal with that is to use
+`easy_rsa`, but the tool is kinda annoying and not really flexible. `expki`
+would like to solve that.
+
+Second reason, I was a bit rusty in Elixir, and I needed something to work on.
 
 # Requirements
 
@@ -12,12 +20,18 @@ certificates with Elixir, including an API and a WUI.
 # Usage
 
 ```console
+$ iex -S mix phx.server
 ```
 
 # Test
 
 ```console
+$ mix test
 ```
+
+# Notes
+
+All my reflexions and thoughts are stored in [`./notes`]()./notes directory.
 
 # References and Resources
 
