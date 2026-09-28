@@ -24,11 +24,15 @@ defmodule Expki.Repo.Migrations.PkiInitiazation do
       add :name, :text, unique: true, null: false
 
       # the kind of certificate (csr, ca, signed...)
-      add :request, :boolean, null: false
-      add :ca, :boolean, null: false
+      add :is_request, :boolean, null: false
+      add :is_ca, :boolean, null: false
+      add :is_signed, :boolean, null: false
 
       # the certificate itself, in PEM format
       add :certificate, :text, unique: true, null: false
+
+      # a certificate can have a key.
+      add :key_id, references("keys")
 
       # The unique serial extracted from the certificate
       add :serial, :text, unique: true, null: false

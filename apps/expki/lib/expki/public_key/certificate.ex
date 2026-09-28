@@ -14,5 +14,4 @@ defmodule Expki.PublicKey.Certificate do
       signature: :todo
     }
   end
-
 end

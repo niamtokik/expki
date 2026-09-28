@@ -1,20 +1,20 @@
 defmodule Expki.Certificates.Certificate do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Expki.Certificates.Key
 
   schema "certificates" do
     field :name, :string
-    field :description, :string
-    field :certificate, :string
-    field :serial, :string
-    field :status, :string
-    field :expire_at, :utc_datetime_usec
-    field :revoked_at, :utc_datetime_usec
-    field :filename, :string
-    field :subject, :string
+    field :is_request, :boolean
+    field :is_ca, :boolean
+    field :is_signed, :boolean
 
-    # belongs_to :certificate_authorities, CertificateAuthorities
-    # belongs_to :certificate_requests, CertificateRequests
+    field :certificate, :string
+    belongs_to :key, Key
+
+    field :serial, :string
+    field :not_before, :utc_datetime
+    field :not_after, :utc_datetime
 
     timestamps()
   end
@@ -22,7 +22,9 @@ defmodule Expki.Certificates.Certificate do
   @doc false
   def changeset(certificate, attrs) do
     certificate
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:name, :is_request, :is_ca, :is_signed, :certificate, :not_before, :not_after])
+    |> unique_constraint([:name])
+    |> unique_constraint([:certificate])
+    |> validate_required([:name, :is_request, :is_ca, :is_signed, :certificate, :not_before, :not_after])
   end
 end

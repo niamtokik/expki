@@ -56,15 +56,40 @@ defmodule Expki.Keys do
 
   TODO: use this function in a changeset
   """
-  @spec verify_private_key(key :: String.t()) :: :ok | {:error, term()}
+  @spec verify_private_key(key :: String.t()) :: {:ok, %RSAPrivateKey{}} | {:error, term()}
   def verify_private_key(key) do
-    with [pem_entry = {:RSAPrivateKey, _,_}] <- :public_key.pem_decode(key),
-      {:ok, _} <- RSAPrivateKey.convert(:public_key.pem_entry_decode(pem_entry))
-    do
-      :ok
-    else
-      _ -> {:error, :invalid_key}
+    case :public_key.pem_decode(key) do
+      # der entry, the key start with 
+      #   -----BEGIN PRIVATE KEY-----
+      [der_entry = {:PrivateKeyInfo, _pkey, :not_encrypted}] ->
+        private_key_der(der_entry)
+
+      # pem entry, the key start with
+      #  -----BEGIN RSA PRIVATE KEY-----
+      [pem_entry = {:RSAPrivateKey, _pkey, :not_encrypted}] ->
+        private_key_pem(pem_entry)
+
+      # any other keys are not supported yet.
+      _ ->
+        {:error, :not_supported}
     end
+  end
+
+  # check if a private key encoded with a der format
+  # is valid.
+  defp private_key_der({id, pkey, _}) do
+    {:ok, :public_key.der_decode(id, pkey)
+      |> RSAPrivateKey.convert()
+    }
+  end
+
+  # check if a private key encoded with a pem
+  # format is valid.
+  defp private_key_pem(entry) do
+    {:ok, entry
+      |> :public_key.pem_entry_decode()
+      |> RSAPrivateKey.convert()
+    }
   end
 
   @doc """
@@ -74,7 +99,7 @@ defmodule Expki.Keys do
   @spec private_key?(key :: String.t()) :: boolean()
   def private_key?(key) do
     case verify_private_key(key) do
-      :ok -> true
+      {:ok, _} -> true
       _ -> false
     end
   end
@@ -89,7 +114,7 @@ defmodule Expki.Keys do
   def create_private_key(attrs \\ %{}) do
     key = Map.get(attrs, :key, generate_private_key())
     case verify_private_key(key) do
-      :ok -> Repo.insert(%Key{ key: key })
+      {:ok, _} -> Repo.insert(%Key{ key: key })
       error -> error
     end
   end
