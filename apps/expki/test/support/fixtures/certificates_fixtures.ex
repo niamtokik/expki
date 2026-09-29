@@ -8,10 +8,10 @@ defmodule Expki.CertificatesFixtures do
   Generate a certificate.
   """
   def certificate_fixture(attrs \\ %{}) do
-    {:ok, certificate} =
+    {:ok, certificate} = 
       attrs
       |> Enum.into(%{
-
+        
       })
       |> Expki.Certificates.create_certificate()
 
