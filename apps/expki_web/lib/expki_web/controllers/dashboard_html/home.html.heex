@@ -1,0 +1,78 @@
+<Layouts.flash_group flash={@flash} />
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="hidden w-64 border-r border-border bg-white px-5 py-6 md:block">
+    <div class="mb-10 flex items-center gap-3">
+      <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-sm font-bold text-white">
+        E
+      </div>
+      <span class="text-lg font-semibold tracking-tight text-blue-800">Expki</span>
+    </div>
+
+    <nav class="space-y-1 text-sm">
+      <a href="#" class="flex items-center gap-3 rounded-lg text-blue-600 bg-zinc-100 px-3 py-2.5 font-medium">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M5 10v10h14V10" />
+        </svg>
+        Overview
+      </a>
+
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted hover:bg-zinc-100 hover:text-ink">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m3 6V7m3 10v-3M4 20h16" />
+        </svg>
+        Projects
+      </a>
+
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted hover:bg-zinc-100 hover:text-ink">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8 5-8-5m16 0l-8-4-8 4m16 0v10l-8 4-8-4V7" />
+        </svg>
+        Keys
+      </a>
+
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted hover:bg-zinc-100 hover:text-ink">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4h-1m-4 6H3v-2a4 4 0 014-4h4a4 4 0 014 4v2zm-2-10a4 4 0 11-8 0 4 4 0 018 0zm6 1a3 3 0 10-3-3" />
+        </svg>
+        Certificates
+      </a>
+
+      <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted hover:bg-zinc-100 hover:text-ink">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.7 1.7 0 00.34 1.88l.06.06-1.8 1.8-.06-.06a1.7 1.7 0 00-1.88-.34 1.7 1.7 0 00-1.03 1.56V20h-2.55v-.1a1.7 1.7 0 00-1.03-1.56 1.7 1.7 0 00-1.88.34l-.06.06-1.8-1.8.06-.06A1.7 1.7 0 008 15a1.7 1.7 0 00-1.56-1.03H6v-2.55h.1A1.7 1.7 0 007.66 10a1.7 1.7 0 00-.34-1.88l-.06-.06 1.8-1.8.06.06A1.7 1.7 0 0011 6a1.7 1.7 0 001.03-1.56V4h2.55v.1A1.7 1.7 0 0015.6 6a1.7 1.7 0 001.88-.34l.06-.06 1.8 1.8-.06.06A1.7 1.7 0 0019.4 10c.15.58.67 1 1.27 1H21v2.55h-.1A1.7 1.7 0 0019.4 15z" />
+        </svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1">
+    <!-- Header -->
+    <header class="flex items-center justify-between border-b border-border bg-white px-5 py-4 sm:px-8">
+      <div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button class="rounded-lg border border-border p-2 text-muted hover:bg-zinc-50 hover:text-ink" aria-label="Notifications">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 00-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0a3 3 0 01-6 0" />
+          </svg>
+        </button>
+
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-orange-100 text-sm font-semibold text-orange-700">
+          A
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-7xl space-y-6 p-5 sm:p-8">
+
+		<!-- dashboard content -->
+    <Expki.Components.DashboardOverview.t />
+
+    </div>
+  </main>
+</div>

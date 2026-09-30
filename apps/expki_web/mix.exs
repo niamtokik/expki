@@ -50,7 +50,9 @@ defmodule ExpkiWeb.MixProject do
       {:gettext, "~> 1.0"},
       {:expki, in_umbrella: true},
       {:jason, "~> 1.2"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      # {:phoenix_view, "~>2.0"},
+      # {:phoenix_html_helpers, "~> 1.0"},
     ]
   end
 

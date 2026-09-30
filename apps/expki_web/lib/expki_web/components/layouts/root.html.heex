@@ -7,6 +7,21 @@
     <.live_title default="Expki" suffix=" · Phoenix Framework" phx-no-format>{assigns[:page_title]}</.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
     <link phx-track-static rel="stylesheet" href={~p"/assets/default.css"} />
+		<script src="https://cdn.tailwindcss.com"></script>
+  	<script>
+    	tailwind.config = {
+      	theme: {
+        	extend: {
+          	colors: {
+            	ink: "#18181b",
+            	muted: "#71717a",
+            	border: "#e4e4e7",
+            	surface: "#fafafa",
+          	}
+        	}
+      	}
+    	};
+  	</script>
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
   </head>
