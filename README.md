@@ -7,9 +7,13 @@ with Elixir, including an API and a WUI. The story behind this project is not
 really interesting, my infrastructure contains OpenVPN service, and the
 certificates require maintenance.  The current way to deal with that is to use
 `easy_rsa`, but the tool is kinda annoying and not really flexible. `expki`
-would like to solve that.
+would like to solve that.  Second reason, I was a bit rusty in Elixir, and I
+needed something to work on.
 
-Second reason, I was a bit rusty in Elixir, and I needed something to work on.
+Another project called [`x509`](https://x509.hexdocs.pm/readme.html) can be
+used instead of this one if you want to have a way to generate a certficate
+quick with a greater support than this library. This project started without
+knowing it... :'
 
 # Requirements
 
@@ -46,3 +50,4 @@ All my reflexions and thoughts are stored in [`./notes`]()./notes directory.
 * https://docs.strongswan.org/docs/latest/pki/pki.html
 * https://github.com/letsencrypt/boulder
 * https://github.com/letsencrypt/boulder/blob/main/README.md
+* https://x509.hexdocs.pm/readme.html

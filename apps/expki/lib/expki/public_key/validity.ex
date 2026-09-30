@@ -18,7 +18,7 @@ defmodule Expki.PublicKey.Validity do
   end
 
   # TODO: documentation + test
-  def converter(struct) do
+  def converter(struct = %__MODULE__{}) do
     with {:ok,
             %__MODULE__{
             notBefore: not_before,
@@ -29,6 +29,13 @@ defmodule Expki.PublicKey.Validity do
         notBefore: to_generalized_time(not_before),
         notAfter: to_generalized_time(not_after),
       })
+    end
+  end
+  def converter(tuple) when is_tuple(tuple) do
+    with true <- is_valid?(tuple),
+         {:ok, %__MODULE__{notBefore: _not_before, notAfter: _not_after}} = convert(tuple)
+    do
+
     end
   end
 
@@ -97,4 +104,34 @@ defmodule Expki.PublicKey.Validity do
                        |> String.to_charlist()
     {:utcTime, generalized_time}
   end
+
+  # TODO: generalized_time documentation
+  def from_generalized_time(charlist) when is_list(charlist) do
+    :erlang.list_to_binary(charlist)
+    |> from_generalized_time()
+  end
+  def from_generalized_time(binary) when is_binary(binary) do
+    <<
+      year::binary-size(2),
+      month::binary-size(2),
+      day::binary-size(2),
+      hour::binary-size(2),
+      minute::binary-size(2),
+      second::binary-size(2),
+      "Z"
+    >> = binary
+    %DateTime{
+      year: String.to_integer(year) + 2000,
+      month: String.to_integer(month),
+      day: String.to_integer(day),
+      hour: String.to_integer(hour),
+      minute: String.to_integer(minute),
+      second: String.to_integer(second),
+      zone_abbr: "UTC",
+      std_offset: 0,
+      utc_offset: 0,
+      time_zone: "Etc/UTC",
+    }
+  end
+
 end
