@@ -63,9 +63,15 @@ defmodule Expki.PublicKey do
   # all the data structure below PublicKey should be records from the
   # public_key Erlang module, then, the same definition should be applied
   # on all of them to avoid mistakes and code deduplication.
+  #
+  # Because some modules will have different behaviors or different
+  # way to be checked, the following templates must have a way
+  # to disable features.
   @doc false
   defmacro __using__(opts) do
     record_id = Keyword.get(opts, :record_id)
+
+    # pem_entry_serializer feature is enabled by default.
     pem_entry_serializer = Keyword.get(opts, :pem_entry_serializer, true)
 
     quote do
@@ -76,7 +82,9 @@ defmodule Expki.PublicKey do
       import Expki.PublicKey
       alias Expki.PublicKey
 
-      # pem_entry_serializer feature.
+      # pem_entry_serializer feature. This feature generates
+      # wrappers around :public_key.pem_entry_encode/2 and
+      # :public_key.pem_entry_decode/1.
       unquote do
         if (pem_entry_serializer) do
           quote do
