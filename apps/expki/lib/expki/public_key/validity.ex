@@ -3,7 +3,7 @@ defmodule Expki.PublicKey.Validity do
   - see: https://www.rfc-editor.org/info/rfc3280/#section-4.1.2.5
   - see: https://en.wikipedia.org/wiki/GeneralizedTime
   """
-  use Expki.PublicKey, name: :Validity
+  use Expki.PublicKey, record_id: :Validity
 
   # TODO: add datetime check: 
   #   * not_before must not be greater than not_after;

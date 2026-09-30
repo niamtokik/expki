@@ -2,8 +2,7 @@ defmodule Expki.PublicKey.AttributeTypeAndValue do
   @moduledoc """
   AttributeTypeAndValue like defined in [RFC3280.A1](https://www.rfc-editor.org/info/rfc3280/#appendix-A.1)
   """
-  use Expki.PublicKey, name: :AttributeTypeAndValue
-  alias Expki.PublicKey
+  use Expki.PublicKey, record_id: :AttributeTypeAndValue
 
   @identifiers [
     :"id-at",

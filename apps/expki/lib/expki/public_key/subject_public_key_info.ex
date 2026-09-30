@@ -1,3 +1,3 @@
 defmodule Expki.PublicKey.SubjectPublicKeyInfo do
-  use Expki.PublicKey, name: :SubjectPublicKeyInfo
+  use Expki.PublicKey, record_id: :SubjectPublicKeyInfo
 end

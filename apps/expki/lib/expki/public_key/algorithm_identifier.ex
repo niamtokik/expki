@@ -1,3 +1,3 @@
 defmodule Expki.PublicKey.AlgorithmIdentifier do
-  use Expki.PublicKey, name: :AlgorithmIdentifier
+  use Expki.PublicKey, record_id: :AlgorithmIdentifier
 end

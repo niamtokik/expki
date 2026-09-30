@@ -1,3 +1,3 @@
 defmodule Expki.PublicKey.RSAPrivateKey do
-  use Expki.PublicKey, name: :RSAPrivateKey, pem: true
+  use Expki.PublicKey, record_id: :RSAPublicKey
 end

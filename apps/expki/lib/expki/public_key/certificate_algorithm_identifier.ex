@@ -1,6 +1,5 @@
 defmodule Expki.PublicKey.CertificateAlgorithmIdentifier do
-  use Expki.PublicKey, name: :Certificate_algorithmIdentifier
-  alias Expki.PublicKey
+  use Expki.PublicKey, record_id: :Certificate_algorithmIdentifier
 
   @algorithms [
     :md2WithRSAEncryption,

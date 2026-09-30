@@ -1,5 +1,5 @@
 defmodule Expki.PublicKey.Certificate do
-  use Expki.PublicKey, name: :Certificate
+  use Expki.PublicKey, record_id: :Certificate
   alias Expki.PublicKey.TBSCertificate
   alias Expki.PublicKey.CertificateAlgorithmIdentifier
 
